@@ -18,22 +18,16 @@ const reviews = [
 ];
 
 const slides = [];
-for (let i = 0; i < reviews.length; i += 3) {
-  slides.push(reviews.slice(i, i + 3));
-}
+for (let i = 0; i < reviews.length; i += 3) slides.push(reviews.slice(i, i + 3));
 
 const section = `<section class="section home-reviews" id="reviews"><p class="eyebrow">고객 후기</p><h2>전라도 출장마사지 이용 후기</h2><div class="review-carousel" data-review-carousel><div class="review-track">${slides.map((slide) => `<div class="review-slide">${slide.map(([area, text]) => `<article class="review-card"><div><span>${area}</span><h3>상담 후 확인 후기</h3></div><p>${text}</p></article>`).join("")}</div>`).join("")}</div></div></section>`;
 
-const css = `.home-reviews{padding-top:18px}.review-carousel{overflow:hidden;border:1px solid #2b2b2b;border-radius:14px;background:#0d0d0d}.review-track{display:flex;transition:transform .55s ease}.review-slide{min-width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:16px}.review-card{min-height:220px;border:1px solid #34271f;border-radius:14px;background:linear-gradient(180deg,#151515,#101010);padding:22px;display:flex;flex-direction:column;justify-content:space-between}.review-card span{color:#ff9b3d;font-weight:900;font-size:14px}.review-card h3{color:#fff;font-size:21px;margin:8px 0 0}.review-card p{color:#d8d8d8;line-height:1.75;font-size:16px;margin:20px 0 0}@media(max-width:900px){.review-slide{grid-template-columns:1fr}.review-card{min-height:auto}}`;
-const js = `<script>(function(){var root=document.querySelector('[data-review-carousel]');if(!root)return;var track=root.querySelector('.review-track');var total=track.children.length;var index=0;setInterval(function(){index=(index+1)%total;track.style.transform='translateX(-'+(index*100)+'%)';},2000);})();</script>`;
+const css = `.home-reviews{padding-top:18px}.review-carousel{overflow:hidden;border:1px solid #2b2b2b;border-radius:14px;background:#0d0d0d}.review-track{display:flex;transition:transform .55s ease}.review-slide{min-width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:16px}.review-card{min-height:220px;border:1px solid #34271f;border-radius:14px;background:linear-gradient(180deg,#151515,#101010);padding:22px;display:flex;flex-direction:column;justify-content:space-between}.review-card span{color:#ff8a1c;font-weight:900;font-size:14px}.review-card h3{color:#fff;font-size:21px;margin:8px 0 0}.review-card p{color:#d8d8d8;line-height:1.75;font-size:16px;margin:20px 0 0}@media(max-width:900px){.review-slide{grid-template-columns:1fr}.review-card{min-height:auto}}`;
+const js = `<script>(function(){var root=document.querySelector('[data-review-carousel]');if(!root)return;var track=root.querySelector('.review-track');if(!track||!track.children.length)return;var total=track.children.length;var index=0;setInterval(function(){index=(index+1)%total;track.style.transform='translateX(-'+(index*100)+'%)';},2000);})();</script>`;
 
 let html = readFileSync(file, "utf8");
 html = html.replace(/<section class="section home-reviews"[\s\S]*?<section class="section" id="faq">/, '<section class="section" id="faq">');
 html = html.replace('<section class="section" id="faq">', `${section}<section class="section" id="faq">`);
-if (!html.includes('.review-carousel')) {
-  html = html.replace('</style>', `${css}</style>`);
-}
-if (!html.includes('[data-review-carousel]')) {
-  html = html.replace('</body>', `${js}</body>`);
-}
+if (!html.includes("review-track{display:flex")) html = html.replace("</style>", `${css}</style>`);
+if (!html.includes("querySelector('[data-review-carousel]')")) html = html.replace("</body>", `${js}</body>`);
 writeFileSync(file, html, "utf8");
