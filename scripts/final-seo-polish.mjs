@@ -5,6 +5,7 @@ const root = "out";
 const oldDomains = ["https://jeolla-do.netlify.app", "http://jeolla-do.netlify.app"];
 const siteUrl = "https://jeolla-do.vercel.app";
 const today = new Date().toISOString().slice(0, 10);
+const qualityCss = `.quality-note .trust-card{border-color:#34271f;background:linear-gradient(180deg,#121212,#0c0c0c)}.quality-note ul{margin:16px 0 0;color:#d8d8d8;line-height:1.8}`;
 
 const cityNotes = {
   "광주": "광주는 상무지구, 첨단, 수완, 충장로처럼 상권과 주거지가 분리되어 같은 광주 안에서도 상담 가능 시간과 이동 동선이 달라집니다.",
@@ -39,14 +40,14 @@ function replaceAllDomains(text) {
   return next;
 }
 function ensureHeadMeta(html) {
-  if (!html.includes('property="og:locale"')) {
-    html = html.replace("</head>", '<meta property="og:locale" content="ko_KR"></head>');
-  }
-  if (!html.includes('name="format-detection"')) {
-    html = html.replace("</head>", '<meta name="format-detection" content="telephone=no"></head>');
-  }
-  if (!html.includes('name="last-modified"')) {
-    html = html.replace("</head>", `<meta name="last-modified" content="${today}"></head>`);
+  if (!html.includes('property="og:locale"')) html = html.replace("</head>", '<meta property="og:locale" content="ko_KR"></head>');
+  if (!html.includes('name="format-detection"')) html = html.replace("</head>", '<meta name="format-detection" content="telephone=no"></head>');
+  if (!html.includes('name="last-modified"')) html = html.replace("</head>", `<meta name="last-modified" content="${today}"></head>`);
+  return html;
+}
+function ensureQualityStyle(html) {
+  if (html.includes("quality-note") && !html.includes("quality-note .trust-card") && html.includes("</style>")) {
+    return html.replace("</style>", `${qualityCss}</style>`);
   }
   return html;
 }
@@ -73,15 +74,10 @@ function polishHtml(file) {
   const areaIndex = normalized.split("/").indexOf("area");
   if (areaIndex !== -1 && !html.includes("quality-note")) {
     const parts = normalized.split("/").slice(areaIndex + 1, -1).map(decodePathPart);
-    if (parts.length === 1 || parts.length === 2) {
-      html = html.replace("</main>", `${qualitySection(parts)}</main>`);
-    }
+    if (parts.length === 1 || parts.length === 2) html = html.replace("</main>", `${qualitySection(parts)}</main>`);
   }
 
-  if (!html.includes("quality-note") && html.includes("</style>")) {
-    html = html.replace("</style>", `.quality-note .trust-card{border-color:#34271f;background:linear-gradient(180deg,#121212,#0c0c0c)}.quality-note ul{margin:16px 0 0;color:#d8d8d8;line-height:1.8}</style>`);
-  }
-
+  html = ensureQualityStyle(html);
   writeFileSync(file, html, "utf8");
 }
 function walk(dir) {
