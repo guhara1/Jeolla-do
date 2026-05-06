@@ -1,6 +1,8 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
 const file = "out/index.html";
+const title = "전라도 마사지킹 출장마사지 | 광주 전주 여수 홈타이 전문";
+const description = "전라도 전 지역 마사지킹 출장마사지 & 홈타이. 광주, 전주, 여수, 순천, 완주 실시간 예약. 관리사 30분 내 도착.";
 const css = `
 body{background:radial-gradient(circle at 18% 14%,rgba(255,122,26,.12),transparent 28%),#050505}
 .hero{min-height:calc(100vh - 74px);padding-top:34px;padding-bottom:34px;grid-template-columns:minmax(0,1fr) minmax(430px,520px);gap:44px;align-items:center}
@@ -24,5 +26,10 @@ body{background:radial-gradient(circle at 18% 14%,rgba(255,122,26,.12),transpare
 `;
 
 let html = readFileSync(file, "utf8");
+html = html.replace(/<title>.*?<\/title>/, `<title>${title}</title>`);
+html = html.replace(/<meta name="description" content=".*?">/, `<meta name="description" content="${description}">`);
+html = html.replace(/<meta property="og:title" content=".*?">/, `<meta property="og:title" content="${title}">`);
+html = html.replace(/<meta property="og:description" content=".*?">/, `<meta property="og:description" content="${description}">`);
+html = html.replace(/"name":"[^"]+","description":"[^"]+"/, `"name":"${title}","description":"${description}"`);
 html = html.replace("</style>", `${css}</style>`);
 writeFileSync(file, html, "utf8");
