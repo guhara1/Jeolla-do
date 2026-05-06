@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "node scripts/build-static.mjs && node scripts/enrich-third-pages.mjs && node scripts/rewrite-third-intros.mjs && node scripts/polish-home.mjs && node scripts/copy-public.mjs",
-    "vercel-build": "node scripts/build-static.mjs && node scripts/enrich-third-pages.mjs && node scripts/rewrite-third-intros.mjs && node scripts/polish-home.mjs && node scripts/copy-public.mjs"
+    "build": "node scripts/build-static.mjs && node scripts/enrich-third-pages.mjs && node scripts/rewrite-third-intros.mjs && node scripts/polish-home.mjs && node scripts/add-home-reviews.mjs && node scripts/copy-public.mjs",
+    "vercel-build": "node scripts/build-static.mjs && node scripts/enrich-third-pages.mjs && node scripts/rewrite-third-intros.mjs && node scripts/polish-home.mjs && node scripts/add-home-reviews.mjs && node scripts/copy-public.mjs"
   }
 }
